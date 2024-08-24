@@ -5,6 +5,7 @@ import com.example.postserver.posts.uploader.UploaderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,13 @@ public class PostService {
     }
 
     private SocialPost updateUploaderName(SocialPost post) {
-        UploaderInfo uploader = uploaderService.getUserInfo(post.getUploaderId());
-        return new SocialPost(post, uploader.getUsername());
+        try {
+            UploaderInfo uploader = uploaderService.getUserInfo(post.getUploaderId());
+            return new SocialPost(post, uploader.getUsername());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return new SocialPost(post, null);
+        }
     }
 
     public List<SocialPost> getAllPosts() {
