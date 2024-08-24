@@ -1,5 +1,7 @@
 package com.example.postserver.posts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,7 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostController {
 
+    private final Logger logger = LoggerFactory.getLogger(PostController.class);
     private final PostService postService;
 
     public PostController(PostService postService) {
@@ -24,8 +27,15 @@ public class PostController {
 
     @GetMapping("/user/{userId}")
     public List<SocialPost> getAllPostsByUser(@PathVariable("userId") int userId) {
+        logger.info("User API : {}", userId);
         return postService.getAllPostsByUploaderId(userId);
     }
+
+    @GetMapping("/v2/user/{userId}")
+    public List<SocialPostV2> getAllPostsByUserV2(@PathVariable("userId") int userId) {
+        return postService.getAllPostsByUploaderId(userId).stream().map(SocialPostV2::fromSocialPostV1).toList();
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<SocialPost> getPostById(@PathVariable int id) {
