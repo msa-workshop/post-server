@@ -1,5 +1,7 @@
 package com.example.postserver.posts;
 
+import com.example.postserver.posts.uploader.UploaderInfo;
+import com.example.postserver.posts.uploader.UploaderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,17 +17,24 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UploaderService uploaderService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UploaderService uploaderService) {
         this.postRepository = postRepository;
+        this.uploaderService = uploaderService;
+    }
+
+    private SocialPost updateUploaderName(SocialPost post) {
+        UploaderInfo uploader = uploaderService.getUserInfo(post.getUploaderId());
+        return new SocialPost(post, uploader.getUsername());
     }
 
     public List<SocialPost> getAllPosts() {
-        return postRepository.findAll().stream().map(SocialPost::fromPostEntity).toList();
+        return postRepository.findAll().stream().map(SocialPost::fromPostEntity).map(this::updateUploaderName).toList();
     }
 
     public List<SocialPost> getAllPostsByUploaderId(int uploaderId) {
-        return postRepository.findByUploaderId(uploaderId).stream().map(SocialPost::fromPostEntity).toList();
+        return postRepository.findByUploaderId(uploaderId).stream().map(SocialPost::fromPostEntity).map(this::updateUploaderName).toList();
     }
 
     public SocialPost getPostById(int postId) {
