@@ -57,4 +57,16 @@ public class PostController {
     public SocialPost createPost(@RequestBody PostRequest post) {
         return postService.createPost(post);
     }
+
+    @DeleteMapping("/deactivate/{userId}")
+    public ResponseEntity<?> deactivateUser(@PathVariable int userId) {
+        boolean result = postService.deactivatePost(userId);
+        return result ? ResponseEntity.ok(true) : ResponseEntity.internalServerError().build();
+    }
+
+    @PutMapping("/activate/{userId}")
+    public ResponseEntity<?> activateUser(@PathVariable int userId) {
+        boolean result = postService.activatePost(userId);
+        return result ? ResponseEntity.ok(true) : ResponseEntity.internalServerError().build();
+    }
 }
