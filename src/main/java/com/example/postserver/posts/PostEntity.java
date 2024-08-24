@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.ZonedDateTime;
 
-@Entity
+@Entity(name = "post")
 @Table(name = "post")
 public class PostEntity {
 
@@ -16,7 +16,7 @@ public class PostEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private ZonedDateTime uploadDatetime;
     private String contents;
-    private String status;
+    private String status = "active";
 
     @PrePersist
     protected void onCreate() {
