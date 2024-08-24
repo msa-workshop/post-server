@@ -18,10 +18,14 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UploaderService uploaderService;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
-    public PostService(PostRepository postRepository, UploaderService uploaderService) {
+    public PostService(PostRepository postRepository, UploaderService uploaderService, KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper) {
         this.postRepository = postRepository;
         this.uploaderService = uploaderService;
+        this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
     }
 
     private SocialPost updateUploaderName(SocialPost post) {
@@ -48,6 +52,15 @@ public class PostService {
     @Transactional
     public SocialPost createPost(PostRequest post) {
         PostEntity savedPost = postRepository.save(new PostEntity(post));
+
+        PostActivity message = new PostActivity(savedPost.getUploaderId(), savedPost.getUploadDatetime(), String.valueOf(savedPost.getPostId()));
+
+        try {
+            kafkaTemplate.send("post.updated", objectMapper.writeValueAsString(message));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
 
         return SocialPost.fromPostEntity(savedPost);
     }
