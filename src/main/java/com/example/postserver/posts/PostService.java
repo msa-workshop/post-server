@@ -71,6 +71,10 @@ public class PostService {
         return SocialPost.fromPostEntity(savedPost);
     }
 
+    public List<Integer> getUploaderByStatus(String status) {
+        return postRepository.findDistinctUploaderIdsByStatus(status);
+    }
+
 
     @Transactional
     public boolean deactivatePost(int userId) {
