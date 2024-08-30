@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-server
+  namespace: sns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-server
+  template:
+    metadata:
+      labels:
+        app: post-server
+    spec:
+      containers:
+        - name: post-container
+          image: jheo/msa-post-server:1.0.0
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","-c","sleep 10"]

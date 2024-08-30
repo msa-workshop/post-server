@@ -1,0 +1,24 @@
+sns:
+  user-server: http://user-service:8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.36.28.106:3306/postdb
+    username: post-server
+    password: password!
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+  kafka:
+    bootstrap-servers: 3.36.28.106:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      timeoutDuration: 3s
+      slidingWindowSize: 10
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000
+
