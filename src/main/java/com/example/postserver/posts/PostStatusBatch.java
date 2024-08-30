@@ -22,7 +22,6 @@ public class PostStatusBatch {
         this.postService = postService;
     }
 
-    @Scheduled(fixedDelay = 10000)
     @Transactional
     public void updatePostStatus() {
         logger.info("Post check batch start");
