@@ -28,6 +28,8 @@ dependencies {
 
     runtimeOnly 'com.mysql:mysql-connector-j'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation project(':sns-common')
 }
 
 tasks.named('test') {
