@@ -2,6 +2,7 @@ package com.example.postserver.posts;
 
 import com.example.postserver.posts.uploader.UploaderInfo;
 import com.example.postserver.posts.uploader.UploaderService;
+import com.example.sns.common.PostActivity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.kafka.core.KafkaTemplate;

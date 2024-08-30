@@ -1,2 +1,2 @@
 rootProject.name = 'post-server'
-
+include 'sns-common'
